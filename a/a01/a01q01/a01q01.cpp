@@ -7,54 +7,54 @@
 //=========================
 
 #include <iostream>
+#include <algorithm>
 #include <vector>
 
-void print(std::vector<int>& n1)
+void print(std::vector<int>& vec)
 {
-  for (int i = 0; i < n1.size(); i++)
+  for (int i = 0; i < vec.size(); i++)
   {
-    std::cout << n1[i];
+    std::cout << vec[i];
   }
   std::cout << '\n';
 }
 
-void flip(std::vector<int>& n1, int end)
-{
-  int lo = 0, hi = end;
-  while (lo < hi) 
-  {
-    int t = n1[lo];
-    n1[lo] = n1[hi];
-    n1[hi] = t;
 
-    lo++;
-    hi--;
+void flip(std::vector<int>& vec, int idx)
+{
+  std::reverse(vec.begin(), vec.begin() + idx + 1);
+  print(vec);
+}
+
+
+size_t max(std::vector<int>& vec, size_t curr_size)
+{
+  size_t max_idx = 0;
+  for (size_t i = 1; i < curr_size; i++)
+  {
+    if (vec[i] >= vec[max_idx])
+    {
+      max_idx = i;
+    }
+  }
+  return max_idx;
+}
+
+
+void sort(std::vector<int>& vec, size_t k)
+{
+  if (k == 0) { return; }
+  for (size_t curr_size = k; curr_size > 1; --curr_size)
+  {
+    size_t max_idx = max(vec, curr_size); 
+    if (max_idx != curr_size - 1)
+    {
+      flip(vec, max_idx);
+      flip(vec, curr_size - 1);
+    }
   }
 }
 
-void sort(std::vector<int>& n1)
-{
-  int n = n1.size();
-  for (int k = n - 1; k > 0; k--)
-  {
-    int maxidx = 0;
-    for (int i = 1; i <= k; i++)
-    {
-      if (n1[i] >= n1[maxidx])
-      {
-        maxidx = i;
-      }
-    }
-    if (maxidx == k) continue;
-    if (maxidx != 0)
-    {
-      flip(n1, maxidx);
-      print(n1);
-    }
-    flip(n1, k);
-    print(n1);
-  }
-}
 
 int main()
 {
@@ -67,9 +67,9 @@ int main()
     digits.insert(digits.begin(), n % 10);
     n /= 10;
   }
-
+  size_t k = digits.size();
   print(digits);
-  sort(digits);
+  sort(digits, k);
   return 0;
 }
 
